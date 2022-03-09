@@ -70,20 +70,11 @@ class Lexer(object):
         t.value = int(t.value)
         return t
 
-    # A regular expression rule with some action code
-    # Note addition of self parameter since we're in a class
-    # @TOKEN(number)
-    # def t_NUMBER(self,t):
-    #     # r'\d+'
-    #     t.value = int(t.value)
-    #     return t
-
     # Define a rule so we can track line numbers
     def t_newline(self, t):
         r'\n+'
         t.lexer.lineno += len(t.value)
 
-    # A string containing ignored characters (spaces and tabs)
     t_ignore = ' \t'
 
     # Error handling rule
@@ -105,23 +96,24 @@ class Lexer(object):
             print(tok)
 
 
-# Build the lexer and try it out
-m = Lexer()
-m.build()           # Build the lexer
-# m.test('''
-# {
-#     "id":1,
-#     "nome": "Nome",
-#     "number": 1,
-#     "real": 1.1234,
+if __name__ == "__main__":
+    # Build the lexer and try it out
+    m = Lexer()
+    m.build()           # Build the lexer
+    # m.test('''
+    # {
+    #     "id":1,
+    #     "nome": "Nome",
+    #     "number": 1,
+    #     "real": 1.1234,
 
-# }
-# ''')     # Test it
+    # }
+    # ''')     # Test it
 
-# m.test('''
-# 1.1234,
-# ''')     # Test it
+    # m.test('''
+    # 1.1234,
+    # ''')     # Test it
 
-s = '''[]'''
+    s = '''[]'''
 
-m.test(s)
+    m.test(s)
