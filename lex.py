@@ -37,7 +37,7 @@ class Lexer(object):
     # Define a regra para um número real(float) no Sqlite !
     real = r'({}\.{})'.format(integer, integer)
 
-    literals = ['{', '}', ":", ","]
+    literals = ['{', '}', ":", ",", "[", "]"]
 
     # def t_lbrace(t):
     #     r'\{'
@@ -122,12 +122,6 @@ m.build()           # Build the lexer
 # 1.1234,
 # ''')     # Test it
 
-# s = '''{
-#         "id":{
+s = '''[]'''
 
-#         },
-
-
-#     }'''
-
-# m.test(s)
+m.test(s)

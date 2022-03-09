@@ -61,13 +61,36 @@ V1 => string| real | integer | null
 
 '''
 
-# def p_start(p):
-#     'S : LCURLY_BRACKETS'
-#     print(list(p))
+
+def p_start(p):
+    '''S : '[' objects ']'
+         | '['  ']'
+    '''
+    if(len(p) == 4):
+        # retorna uma lista com as tabelas criadas no caso de ser um array de objects::
+        aux = '\n'.join(p[2])
+        p[0] = aux
+
+        # # Retorna somente o primeiro item da lista de objects.
+        # p[0] = p[2][0]
+
+    else:
+        p[0] = ''
+
+
+def p_objects_array(p):
+    '''
+    objects : object
+            | object ',' objects
+    '''
+    if(len(p) == 2):
+        p[0] = p[1]
+    else:
+        p[0] = [p[1], p[3]]
 
 
 def p_curly_expression(p):
-    '''S : '{' E '}' '''
+    '''object : '{' E '}' '''
     p[1] = 'CREATE TABLE table('
     p[3] = ');'
 
@@ -92,12 +115,9 @@ def p_E_key_colon_value_expression(p):
 
     if p[3].startswith('CREATE'):
         aux = p[3]
-        print('foi')
         aux = aux.replace('table', '{}_table'.format(p[1]))
 
         p[3] = "INTEGER REFERENCES {}_table".format(p[1])
-
-        print(aux)
 
     p[0] = "{} {} {}".format(p[1], p[2], p[3])
 
@@ -117,8 +137,7 @@ def p_value_expression(p):
     elif len(p) == 4:
         p[0] = "{}{} {}".format(p[1], p[2], p[3])
     else:
-        print('errorrrrrrrrrrr')
-        # raise Exception('Error::')
+        raise Exception('Error::')
 
 
 def p_value_terminals(p):
@@ -138,24 +157,7 @@ def p_value_terminals(p):
         # ao criar uma tabela, converte o valor para TEXT
         p[0] = 'TEXT'
     else:
-        print('errorrrrrrrrrrr')
-        # raise Exception('ERROR::')
-
-    print(list(p))
-
-
-# def p_5(p):
-#     'VALUE : INTEGER'
-#     # print('called')
-#     print(list(p))
-#     p[0] = 'INTEGER'
-
-# def p_expression_plus(p):
-#     'term : LCURLY_BRACKETS'
-#     print(list(p))
-#     p[0] = p[1] + p[3]
-
-# Error rule for syntax errors
+        raise Exception('ERROR::')
 
 
 def p_error(p):
@@ -177,8 +179,10 @@ parser = yacc.yacc()
 
 # s = '''{"id":5}'''
 # s = '''{"id":5}'''
-s = '''{
-        "id":{"x":5}
-    }'''
+# s = '''{
+#         "id":{"x":5}
+#     }'''
+
+s = '''[ {"id": 5}, {"idpk" : 0}]'''
 result = parser.parse(s)
 print(result)
