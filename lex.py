@@ -3,51 +3,28 @@ from ply.lex import TOKEN
 
 
 class Lexer(object):
-    # List of token names.   This is always required
+    # List of token names.
     tokens = (
-        # 'RCURLY_BRACKETS',
-        # 'LCURLY_BRACKETS',
-        'QUOTE',
-        # 'COLON',
-        # 'COMMA',
         'NULL',
-        'STRING',
         'REAL',
-        'INTEGER',
-        # 'DOT'
+        'STRING',
+        'INTEGER'
     )
 
-    # Regular expression rules for simple tokens
-    # t_LCURLY_BRACKETS = r'{'
-    # t_RCURLY_BRACKETS = r'}'
-    # t_COLON = r':'
-    # t_COMMA = r','
-    # t_DOT = r'\.'
-    # string = r'({}{}{})'
+    # Regular expression rules
     quote = r'"'
-    text = r'([-_.a-zA-Z])'
-    integer = r'([0-9])'
+    text = r'([-_.a-zA-Z]|[éáíóúãõũẽãç]|[ÉÁÍÓÚÃÕŨẼÃÇ])'
+    digit = r'([0-9])'
+    integer = r'([0-9])+'
 
-    # string = text
     string = r'({}({}|{})+{})'.format(quote, text, integer, quote)
 
-    # null = r'[n][u][l][l]'
     null = r'null'
-    # real = r'([0-9]+)\.'
     # Define a regra para um número real(float) no Sqlite !
     real = r'({}\.{})'.format(integer, integer)
 
     literals = ['{', '}', ":", ",", "[", "]"]
 
-    # def t_lbrace(t):
-    #     r'\{'
-    #     t.type = '{'      # Set token type to the expected literal
-    #     return t
-
-    # def t_rbrace(t):
-    #     r'\}'
-    #     t.type = '}'      # Set token type to the expected literal
-    #     return t
     @TOKEN(null)
     def t_NULL(self, t):
         t.value = None
@@ -97,23 +74,16 @@ class Lexer(object):
 
 
 if __name__ == "__main__":
-    # Build the lexer and try it out
+    # Build the lexer
     m = Lexer()
-    m.build()           # Build the lexer
-    # m.test('''
-    # {
-    #     "id":1,
-    #     "nome": "Nome",
-    #     "number": 1,
-    #     "real": 1.1234,
+    m.build()
+    out = m.test('''
+    {
+        "id":1,
+        "nome": "Nome",
+        "number": "100-5..-_",
+        "real": 1.1234
 
-    # }
-    # ''')     # Test it
-
-    # m.test('''
-    # 1.1234,
-    # ''')     # Test it
-
-    s = '''[]'''
-
-    m.test(s)
+    }
+    ''')
+    print(out)
